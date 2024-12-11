@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction lists</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+
+  <body>
+    <main class="imposter">
+      <section class="transaction">
+        <!-- header -->
+        <header class="transaction__header">
+          <h1 class="transaction__title">لیست تراکنش‌ها</h1>
+
+          <div class="search__container">
+            <input
+              type="text"
+              class="transaction__search"
+              placeholder=" شماره پیگیری تراکنش ..."
+            />
+            <button class="searchBtn">
+              <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- body -->
+        <div class="transaction__body">
+          <h3>لیست تراکنش‌های شما</h3>
+          <div class="transaction__subtitle">
+            <span>ردیف</span>
+            <span>نوع تراکنش</span>
+            <div class="transaction__price">
+              <span>مبلغ</span>
+              <svg
+                width="24"
+                height="24"
+                class="chevaron"
+                onclick="sorting.detectTpySort('price')"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10L12 14L17 10"
+                  stroke="#1E1E1E"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <span>شماره پیگیری</span>
+            <div class="transaction__date">
+              <span>تاریخ و ساعت تراکنش</span>
+
+              <svg
+                width="24"
+                height="24"
+                class="chevaron"
+                onclick="sorting.detectTpySort('date')"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7 10L12 14L17 10"
+                  stroke="#1E1E1E"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="transaction__items"></div>
+        </div>
+<!--  -->
+        <button class="transaction__loadBtn">بارگذاری تراکنش‌ها</button>
+<!-- <div> -->
+  <!-- <h2>Welcome to App</h2> -->
+  <!-- <br> -->
+  <!-- <h3>Please choose your language</h3> -->
+  <!-- <div> -->
+     <!-- <button class="transaction__loadBtn">English</button> -->
+     <!-- <button>فارسی</button> -->
+  <!-- </div> -->
+   <!--  -->
+<!-- </div> -->
+       
+      <!-- </section> -->
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="./js/index.js"></script>
+  </body>
+</html>
