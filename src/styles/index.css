@@ -97,16 +97,16 @@ body {
   border: 1px solid var(--color-secondary-300);
   border-radius: var(--border-radius-xl);
   outline: transparent solid 2px;
-  transition: all ease-in-out 3ms;
+  transition: all ease-in-out 200ms;
   font-size: 1.7rem;
-  line-height: 1.2;
-  white-space: nowrap;
+
   color: var(--color-secondary-500);
   padding-left: 30px;
-  
 }
-.transaction__search:focus-within {
-  border: 2px solid var(--color-secondary-400);
+
+.transaction__search:focus {
+  border: 2px solid var(--color-primary-700);
+  box-shadow: 0 0 5px var(--color-primary-400);
   outline: none;
 }
 
@@ -121,22 +121,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  visibility: hidden; 
+  visibility: hidden;
 }
 
-
-.searchBtn{
-position: absolute;
-top:0;
-left:0;
-padding: 15px;
-display: inline-flex;
-align-items: center;
-background: transparent;
-border: none;
-
+.searchBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 15px;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
 }
-
 
 .transaction__price {
   display: flex;
@@ -224,6 +221,9 @@ border: none;
   text-align: center;
   margin-bottom: 1rem;
 }
+.transaction__body.hidden {
+  display: none;
+}
 
 /* button for loading transaction */
 .transaction__loadBtn {
@@ -241,13 +241,14 @@ border: none;
   padding: 1rem 2.5rem;
   border-radius: var(--border-radius-xl);
   cursor: pointer;
-  transition: all ease-in-out 200ms;
+  transition: background-color ease-in-out 200ms, transform ease-in-out 200ms;
   align-self: center;
 }
 
-/* .transaction__loadBtn:hover { */
-/* background-color: rgb(255, 255, 255, 0.1); */
-/* } */
+.transaction__loadBtn:hover {
+  background-color: var(--color-primary-800);
+  transform: scale(1.05);
+}
 
 /* Dynamic classes */
 
@@ -261,7 +262,7 @@ border: none;
 
 .rotate {
   transform: rotate(180deg);
-  transition: all ease-in-out 1ms;
+  transition: all ease-in-out 500ms;
 }
 
 .resultMsg {
@@ -297,7 +298,6 @@ border: none;
 
   .transaction__price > svg,
   .transaction__date > svg {
-    display: flex;
     width: 15px;
     height: 15px;
   }
@@ -310,7 +310,6 @@ border: none;
 
   .transaction__price > svg,
   .transaction__date > svg {
-    display: flex;
     width: 24px;
     height: 24px;
   }

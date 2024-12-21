@@ -18,123 +18,73 @@ const filters = {
   searchItems: "",
 };
 
-
+const BASE_URL = "http://localhost:3000"
 
 // Transactions class
-
-class transactions {
-
+class Transactions {
   static async renderTransactions(_transactions, _filter) {
-    if (_filter.searchItems) {
-      axios
-        .get(`http://localhost:3000/transactions?refId_like=${_filter.searchItems}`)
-        .then((res) => {
-          this.showTransaction(res.data);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      this.showTransaction(allTransactiondata);
+    // transactionItems.innerHTML = "<div class='loading'>Loading...</div>";
+    try {
+      let data = allTransactiondata;
+      if (_filter.searchItems) {
+        const response = await axios.get(`${BASE_URL}/transactions?refId_like=${_filter.searchItems}`);
+        data = response.data;
+      }
+      // transactionItems.innerHTML = ""; // Clear loader
+      this.showTransaction(data);
+    } catch (err) {
+      console.error(err);
+      domUi.showError("Failed to fetch transactions.");
     }
   }
 
-
   static async getTransactions() {
-
     domUi.showHeader();
-    await axios
-      .get("http://localhost:3000/transactions")
-      .then((res) => {
-        allTransactiondata = res.data;
 
-        this.renderTransactions(res.data, filters);
-      })
-      .catch((err) => console.log(err));
+    try {
+      const response = await axios.get(`${BASE_URL}/transactions`);
+      allTransactiondata = response.data;
+      this.renderTransactions(allTransactiondata, filters);
+    } catch (err) {
+      console.error(err);
+      domUi.showError("Failed to fetch transactions.");
+    }
   }
 
-
   static showTransaction(_transactions) {
-    console.log(_transactions.length);
     if (_transactions.length > 0) {
       domUi.showHeader();
-      _transactions.forEach((item, index) => {
+      const fragment = document.createDocumentFragment();
+      _transactions.forEach((item) => {
         const transactionItem = document.createElement("div");
         transactionItem.classList.add("transaction__item");
         transactionItem.innerHTML = `
-      <span>${item.id}</span>
-      <span class="type" >${item.type} 
-      </span>
-     <span>${item.price}</span> 
-      <span>${item.refId} </span>
-      <span>
-      ${new Date(item.date).toLocaleString("fa", {
+          <span>${item.id || "N/A"}</span>
+          <span class="type">${item.type || "N/A"}</span>
+          <span>${item.price || "N/A"}</span>
+          <span>${item.refId || "N/A"}</span>
+          <span>${new Date(item.date || Date.now()).toLocaleString("fa", {
           dateStyle: "short",
           timeStyle: "medium",
         })}</span>`;
-
-        transactionItems.appendChild(transactionItem);
-
-        domUi.changeColor();
-      }
-
-
-      );
-    }
-    else {
+        fragment.appendChild(transactionItem);
+      });
+      transactionItems.appendChild(fragment);
+      domUi.changeColor();
+    } else {
       domUi.hideHeader();
-      // this.showTransaction(_transactions);
     }
   }
 
   static searchTransaction() {
     transactionSearch.addEventListener("input", (e) => {
       filters.searchItems = e.target.value;
-      transactionItems.innerHTML = "";
+      // transactionItems.innerHTML = "";
       this.renderTransactions(allTransactiondata, filters);
     });
   }
-
-
 }
 
-// DOM class
-
-class domUi {
-  static showHeader() {
-    transactionItems.innerHTML = "";
-    transactionSearch.style.visibility = "visible";
-    transactionBody.style.visibility = "visible";
-    transactionItems.style.visibility = "visible";
-    transactionHeader.style.visibility = "visible";
-    showBtn.style.visibility = "hidden";
-    msgResult.style.visibility = "hidden";
-  }
-  static hideHeader() {
-    transactionItems.innerHTML = "";
-    transactionSearch.style.visibility = "visible";
-    transactionBody.style.visibility = "visible";
-    transactionHeader.style.visibility = "hidden";
-    transactionItems.style.visibility = "hidden";
-    showBtn.style.visibility = "hidden";
-    msgResult.style.visibility = "visible";
-    msgResult.classList.add("resultMsg");
-
-    msgResult.innerHTML = `<span>تراکنش یافت نشد</span>`;
-    transactionBody.appendChild(msgResult);
-
-  }
-  static changeColor() {
-    const typeItems = document.querySelectorAll(".type");
-    typeItems.forEach((item) => {
-      if (item.textContent.includes("برداشت از حساب")) {
-        item.classList.add("red");
-      }
-      else if (item.textContent.includes("افزایش اعتبار")) {
-        item.classList.add("green");
-      }
-    })
-  }
-
-}
 
 class sorting {
   static detectTpySort(nameSort) {
@@ -162,29 +112,77 @@ class sorting {
 
   }
   static async sortData({ nameSort, typeSort }) {
-    transactionItems.innerHTML = "";
+    // transactionItems.innerHTML = "";
     await axios
-      .get(`http://localhost:3000/transactions?_sort=${nameSort}&_order=${typeSort}`)
+      .get(`${BASE_URL}/transactions?_sort=${nameSort}&_order=${typeSort}`)
       .then((res) => {
-        transactions.showTransaction(res.data);
+        Transactions.showTransaction(res.data);
       })
       .catch((err) => console.log(err));
 
 
   }
-
 }
+
+
+
+
+// DOM class
+class domUi {
+  static showHeader() {
+    transactionItems.innerHTML = "";
+    transactionSearch.style.visibility = "visible";
+    transactionBody.style.visibility = "visible";
+    transactionItems.style.visibility = "visible";
+    transactionHeader.style.visibility = "visible";
+    showBtn.style.visibility = "hidden";
+    msgResult.style.visibility = "hidden";
+  }
+
+  static hideHeader() {
+    transactionItems.innerHTML = "";
+    transactionSearch.style.visibility = "visible";
+    transactionBody.style.visibility = "visible";
+    transactionHeader.style.visibility = "hidden";
+    transactionItems.style.visibility = "hidden";
+    showBtn.style.visibility = "hidden";
+    msgResult.style.visibility = "visible";
+    msgResult.classList.add("resultMsg");
+    msgResult.innerHTML = `<span>تراکنش یافت نشد</span>`;
+    transactionBody.appendChild(msgResult);
+  }
+
+  static showError(message) {
+    msgResult.style.visibility = "visible";
+    msgResult.innerHTML = `<span>${message}</span>`;
+    transactionBody.appendChild(msgResult);
+  }
+
+  static changeColor() {
+    const typeItems = document.querySelectorAll(".type");
+    typeItems.forEach((item) => {
+      if (item.textContent.includes("برداشت از حساب")) {
+        item.classList.add("red");
+      } else if (item.textContent.includes("افزایش اعتبار")) {
+        item.classList.add("green");
+      }
+    });
+  }
+}
+
+
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+  Transactions.searchTransaction();
+
+});
+
 
 // loading button event
 showBtn.addEventListener("click", () => {
 
-  transactions.getTransactions();
+  Transactions.getTransactions();
+
 }
 );
-
-
-// Document event
-document.addEventListener("DOMContentLoaded", (event) => {
-  transactions.searchTransaction();
-
-});
